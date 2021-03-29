@@ -1,1 +1,2 @@
 #include <elasticsearch/elasticsearch.h>
+#include <elasticsearch/except.h>

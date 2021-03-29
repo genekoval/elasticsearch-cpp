@@ -7,6 +7,7 @@ library = lib$(project)
 $(library).type = shared
 define library.libs
  http
+ fmt
 endef
 
 test.deps = $(library)
@@ -15,6 +16,7 @@ define test.libs
  gtest
  gtest_main
  http
+ fmt
 endef
 
 install := $(library)

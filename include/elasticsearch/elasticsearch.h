@@ -25,11 +25,22 @@ namespace elastic {
     };
 
     class elasticsearch {
-        http::client* client;
-        std::string url;
+        const http::client* client;
+        const std::string host;
+
+        auto request() const -> http::response;
+
+        auto request(std::string_view path) const -> http::response;
+
+        auto request(
+            std::string_view path,
+            http::options options
+        ) const -> http::response;
     public:
-        elasticsearch(http::client& client, std::string_view url);
+        elasticsearch(const http::client& client, std::string_view host);
 
         auto about() const -> about_type;
+
+        auto index_create(std::string_view index) const -> void;
     };
 }
