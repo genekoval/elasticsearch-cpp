@@ -34,7 +34,7 @@ namespace elastic {
 
         auto request(
             std::string_view path,
-            http::options options
+            http::options&& options
         ) const -> http::response;
     public:
         elasticsearch(const http::client& client, std::string_view host);

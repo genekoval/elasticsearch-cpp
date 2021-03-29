@@ -28,10 +28,10 @@ namespace elastic {
 
     auto elasticsearch::request(
         std::string_view path,
-        http::options options
+        http::options&& options
     ) const -> http::response {
         const auto url = fmt::format("{}/{}", host, path);
-        auto res = client->request(url);
+        auto res = client->request(url, std::move(options));
 
         if (!res.ok()) {
             throw es_error(res.status(), res.text());
