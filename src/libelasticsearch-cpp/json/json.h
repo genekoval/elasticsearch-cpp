@@ -26,4 +26,23 @@ namespace elastic {
         version,
         tagline
     )
+
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
+        shard_type,
+        total,
+        successful,
+        failed
+    )
+
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
+        document_create_type,
+        _index,
+        _type,
+        _id,
+        _version,
+        result,
+        _shards,
+        _seq_no,
+        _primary_term
+    )
 }

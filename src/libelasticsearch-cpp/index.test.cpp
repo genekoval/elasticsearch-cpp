@@ -1,7 +1,5 @@
 #include "elasticsearch.test.h"
 
-#include <gtest/gtest.h>
-
 TEST(IndexTest, CreateDelete) {
     constexpr auto index = "test";
 

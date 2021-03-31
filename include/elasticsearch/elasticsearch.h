@@ -24,6 +24,23 @@ namespace elastic {
         std::string tagline;
     };
 
+    struct shard_type {
+        int total;
+        int successful;
+        int failed;
+    };
+
+    struct document_create_type {
+        std::string _index;
+        std::string _type;
+        std::string _id;
+        int _version;
+        std::string result;
+        shard_type _shards;
+        int _seq_no;
+        int _primary_term;
+    };
+
     class elasticsearch {
         const http::client* client;
         const std::string host;
@@ -40,6 +57,12 @@ namespace elastic {
         elasticsearch(const http::client& client, std::string_view host);
 
         auto about() const -> about_type;
+
+        auto document_create(
+            std::string_view index,
+            std::string_view id,
+            nlohmann::json document
+        ) const -> document_create_type;
 
         auto index_create(std::string_view index) const -> void;
 
