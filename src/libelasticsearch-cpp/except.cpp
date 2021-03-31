@@ -6,5 +6,5 @@ namespace elastic {
         response_code(response_code)
     {}
 
-   auto es_error::status() -> long { return response_code; }
+   auto es_error::status() const -> long { return response_code; }
 }

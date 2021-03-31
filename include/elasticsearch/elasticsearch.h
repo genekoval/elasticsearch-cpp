@@ -42,5 +42,9 @@ namespace elastic {
         auto about() const -> about_type;
 
         auto index_create(std::string_view index) const -> void;
+
+        auto index_delete(std::string_view index) const -> void;
+
+        auto index_exists(std::string_view index) const -> bool;
     };
 }

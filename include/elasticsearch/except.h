@@ -8,6 +8,6 @@ namespace elastic {
     public:
         es_error(long response_code, const std::string& message);
 
-        auto status() -> long;
+        auto status() const -> long;
     };
 }
