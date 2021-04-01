@@ -35,7 +35,7 @@ namespace elastic {
     )
 
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
-        document_create_type,
+        document_type,
         _index,
         _type,
         _id,

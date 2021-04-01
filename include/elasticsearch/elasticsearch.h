@@ -30,7 +30,7 @@ namespace elastic {
         int failed;
     };
 
-    struct document_create_type {
+    struct document_type {
         std::string _index;
         std::string _type;
         std::string _id;
@@ -62,7 +62,12 @@ namespace elastic {
             std::string_view index,
             std::string_view id,
             nlohmann::json document
-        ) const -> document_create_type;
+        ) const -> document_type;
+
+        auto document_delete(
+            std::string_view index,
+            std::string_view id
+        ) const -> document_type;
 
         auto index_create(std::string_view index) const -> void;
 
