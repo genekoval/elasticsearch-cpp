@@ -23,3 +23,7 @@ install := $(library)
 targets := $(install)
 
 include mkbuild/base.mk
+
+test.config = .test.json
+
+$(obj)/$(test)/elastic_env.test.o: CXXFLAGS += -DTEST_CONFIG='"$(test.config)"'

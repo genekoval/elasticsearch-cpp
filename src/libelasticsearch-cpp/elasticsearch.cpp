@@ -1,42 +1,25 @@
-#include "json/json.h"
+#include "type/type.h"
 
 #include <elasticsearch/elasticsearch.h>
-#include <elasticsearch/except.h>
 
 #include <fmt/format.h>
 
 namespace elastic {
     elasticsearch::elasticsearch(
-        const http::client& client,
-        std::string_view host
+        std::string_view host,
+        std::string_view api_key
     ) :
-        client(&client),
-        host(host.ends_with('/') ? host.substr(0, host.size() - 1) : host)
+        host(host),
+        auth(api_key),
+        documents(this),
+        indices(this)
     {}
 
     auto elasticsearch::about() const -> about_type {
-        return request().json().get<about_type>();
-    }
+        auto req = request("/");
 
-    auto elasticsearch::request() const -> http::response {
-        return request("", {});
-    }
+        req.method(http::method::GET);
 
-    auto elasticsearch::request(std::string_view path) const -> http::response {
-        return request(path, {});
-    }
-
-    auto elasticsearch::request(
-        std::string_view path,
-        http::options&& options
-    ) const -> http::response {
-        const auto url = fmt::format("{}/{}", host, path);
-        auto res = client->request(url, std::move(options));
-
-        if (!res.ok()) {
-            throw es_error(res.status(), res.text());
-        }
-
-        return res;
+        return get<about_type>(req);
     }
 }
