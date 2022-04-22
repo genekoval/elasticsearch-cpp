@@ -4,6 +4,7 @@
 #include "api/index.h"
 #include "except.h"
 #include "type/about_type.h"
+#include "type/result_type.h"
 
 #include <http/http>
 #include <string_view>
@@ -51,6 +52,8 @@ namespace elastic {
         const document_api documents;
         const index_api indices;
 
+        elasticsearch() = default;
+
         elasticsearch(std::string_view host, std::string_view api_key);
 
         elasticsearch(const elasticsearch&) = delete;
@@ -58,5 +61,10 @@ namespace elastic {
         elasticsearch& operator=(const elasticsearch&) = delete;
 
         auto about() const -> about_type;
+
+        auto search(
+            std::string_view index,
+            const http::json& query
+        ) const -> result_type;
     };
 }

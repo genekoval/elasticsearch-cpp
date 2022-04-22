@@ -18,8 +18,6 @@ namespace elastic {
     auto elasticsearch::about() const -> about_type {
         auto req = request("/");
 
-        req.method(http::method::GET);
-
         return get<about_type>(req);
     }
 }
