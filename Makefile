@@ -17,6 +17,7 @@ define test.libs
  gtest_main
  http
  fmt
+ simdjson
 endef
 
 install := $(library)

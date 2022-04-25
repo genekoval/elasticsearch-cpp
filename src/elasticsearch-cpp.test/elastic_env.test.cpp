@@ -38,7 +38,7 @@ namespace {
 }
 
 namespace elastic::test {
-    auto ElasticEnvironment::elasticsearch() -> const elastic::elasticsearch& {
+    auto ElasticEnvironment::elasticsearch() -> elastic::elasticsearch& {
         static auto instance = elastic::elasticsearch(
             settings().node,
             settings().auth

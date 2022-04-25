@@ -1,5 +1,3 @@
-#include "type/type.h"
-
 #include <elasticsearch/elasticsearch.h>
 
 #include <fmt/format.h>
@@ -10,14 +8,27 @@ namespace elastic {
         std::string_view api_key
     ) :
         host(host),
-        auth(api_key),
-        documents(this),
-        indices(this)
+        auth(fmt::format("ApiKey {}", api_key))
     {}
 
-    auto elasticsearch::about() const -> about_type {
+    auto elasticsearch::about() -> json {
         auto req = request("/");
 
-        return get<about_type>(req);
+        return get(req);
+    }
+
+    auto elasticsearch::get(http::request& req) -> json {
+        send(req);
+
+        document = parser.iterate(memory.storage);
+        return document;
+    }
+
+    auto elasticsearch::send(http::request& req) -> void {
+        auto res = req.perform(memory);
+
+        if (res.ok()) return;
+
+        throw es_error(res.status(), memory.storage);
     }
 }

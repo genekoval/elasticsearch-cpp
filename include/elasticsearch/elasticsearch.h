@@ -1,35 +1,22 @@
 #pragma once
 
-#include "api/document.h"
-#include "api/index.h"
 #include "except.h"
-#include "type/about_type.h"
-#include "type/result_type.h"
 
 #include <http/http>
-#include <string_view>
+#include <simdjson.h>
 
 namespace elastic {
-    class elasticsearch {
-        friend class document_api;
-        friend class index_api;
+    using json = simdjson::ondemand::document_reference;
 
+    class elasticsearch {
         const std::string host;
         const std::string auth;
 
-        template <typename R>
-        auto get(http::request& req) const -> R {
-            auto res = req.perform();
+        http::memory memory = { .padding = simdjson::SIMDJSON_PADDING };
+        simdjson::ondemand::parser parser;
+        simdjson::ondemand::document document;
 
-            if (res.ok()) {
-                if constexpr (std::is_same_v<R, void>) return;
-                else {
-                    return res.json().template get<R>();
-                }
-            }
-
-            throw es_error(res.status(), res.text());
-        }
+        auto get(http::request& req) -> json;
 
         template <typename ...Args>
         auto request(
@@ -44,27 +31,39 @@ namespace elastic {
             auto req = http::request();
 
             req.url(host + path);
-            req.header("Authorization", fmt::format("ApiKey {}", auth));
+            req.header("Authorization", auth);
 
             return req;
         }
-    public:
-        const document_api documents;
-        const index_api indices;
 
+        auto send(http::request& req) -> void;
+    public:
         elasticsearch() = default;
 
         elasticsearch(std::string_view host, std::string_view api_key);
 
-        elasticsearch(const elasticsearch&) = delete;
+        auto about() -> json;
 
-        elasticsearch& operator=(const elasticsearch&) = delete;
+        auto create_doc(
+            std::string_view index,
+            std::string_view id,
+            std::string&& document
+        ) -> json;
 
-        auto about() const -> about_type;
+        auto create_index(std::string_view name) -> void;
+
+        auto delete_doc(
+            std::string_view index,
+            std::string_view id
+        ) -> json;
+
+        auto delete_index(std::string_view name) -> void;
+
+        auto index_exists(std::string_view target) -> bool;
 
         auto search(
             std::string_view index,
-            const http::json& query
-        ) const -> result_type;
+            std::string&& query
+        ) -> json;
     };
 }

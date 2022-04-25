@@ -7,7 +7,7 @@
 
 class ElasticTest : public testing::Test {
 protected:
-    const elastic::elasticsearch& client;
+    elastic::elasticsearch& client;
 
     ElasticTest();
 };

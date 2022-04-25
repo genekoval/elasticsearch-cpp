@@ -6,7 +6,7 @@
 
 namespace elastic::test {
     struct ElasticEnvironment : testing::Environment {
-        static auto elasticsearch() -> const elasticsearch&;
+        static auto elasticsearch() -> elasticsearch&;
 
         virtual auto SetUp() -> void override;
     };

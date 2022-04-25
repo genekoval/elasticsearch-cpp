@@ -1,13 +1,13 @@
-#include "../api.h"
+#include <elasticsearch/elasticsearch.h>
 
 namespace elastic {
-    auto index_api::exists(std::string_view target) const -> bool {
-        auto req = client->request("/{}", target);
+    auto elasticsearch::index_exists(std::string_view target) -> bool {
+        auto req = request("/{}", target);
 
         req.method(http::method::HEAD);
 
         try {
-            client->get<void>(req);
+            send(req);
             return true;
         }
         catch (const es_error& ex) {
