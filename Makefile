@@ -23,6 +23,8 @@ endef
 install := $(library)
 targets := $(install)
 
+install.directories = $(include)/elasticsearch
+
 include mkbuild/base.mk
 
 test.config = .test.json
