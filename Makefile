@@ -1,31 +1,30 @@
-project = elasticsearch-cpp
+project = elasticsearch
 summary = HTTP-based Elasticsearch client for C++
 
 STD = c++20
 
 library = lib$(project)
 $(library).type = shared
-define library.libs
- http
- fmt
-endef
+$(library).libs = http fmt timber
 
 test.deps = $(library)
-define test.libs
- $(project)
- gtest
- gtest_main
- http
- fmt
- simdjson
-endef
+test.libs = \
+ $(project) \
+ ext++ \
+ gtest \
+ http \
+ fmt \
+ simdjson \
+ timber
 
 install := $(library)
 targets := $(install)
 
-install.directories = $(include)/elasticsearch
+install.directories = $(include)/$(project)
 
 include mkbuild/base.mk
+
+defines.release = NDEBUG
 
 test.config = .test.json
 

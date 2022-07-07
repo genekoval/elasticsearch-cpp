@@ -1,7 +1,7 @@
 #include <internal/test.h>
 
 TEST_F(ElasticTest, About) {
-    auto about = client.about();
+    auto about = client.about().send();
 
     const auto version = std::string_view(about["version"]["number"]);
 
