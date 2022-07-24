@@ -22,6 +22,8 @@ targets := $(install)
 
 install.directories = $(include)/$(project)
 
+files = $(include) $(src) Makefile VERSION
+
 include mkbuild/base.mk
 
 defines.release = NDEBUG
