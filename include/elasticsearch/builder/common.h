@@ -4,19 +4,17 @@
 
 #include <ext/string.h>
 #include <http/http>
-#include <simdjson.h>
+#include <nlohmann/json.hpp>
 #include <timber/timber>
 
 namespace elastic {
-    using json = simdjson::ondemand::document_reference;
+    using json = nlohmann::json;
 }
 
 namespace elastic::builder {
     struct request_bundle {
         http::request* const request;
-        http::memory* const memory;
-        simdjson::ondemand::parser* const parser;
-        simdjson::ondemand::document* const document;
+        std::string* const memory;
     };
 
     template <typename Derived>
@@ -66,7 +64,7 @@ namespace elastic::builder {
 
             if (response.ok()) return;
 
-            throw es_error(response.status(), memory.storage);
+            throw es_error(response.status(), memory);
         }
     };
 
@@ -77,12 +75,7 @@ namespace elastic::builder {
         auto send() -> json {
             void_return<Derived>::send();
 
-            const auto& storage = this->bundle.memory->storage;
-            auto& parser = *this->bundle.parser;
-
-            *this->bundle.document = parser.iterate(storage);
-
-            return *this->bundle.document;
+            return json::parse(*this->bundle.memory);
         }
     };
 

@@ -14,7 +14,6 @@ test.libs = \
  gtest \
  http \
  fmt \
- simdjson \
  timber
 
 install := $(library)
@@ -25,8 +24,6 @@ install.directories = $(include)/$(project)
 files = $(include) $(src) Makefile VERSION
 
 include mkbuild/base.mk
-
-defines.release = NDEBUG
 
 test.config = .test.json
 

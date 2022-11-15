@@ -52,8 +52,6 @@ namespace elastic {
         return {
             .request = &request,
             .memory = &memory,
-            .parser = &parser,
-            .document = &document
         };
     }
 

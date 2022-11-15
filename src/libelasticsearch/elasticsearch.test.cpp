@@ -3,7 +3,7 @@
 TEST_F(ElasticTest, About) {
     auto about = client.about().send();
 
-    const auto version = std::string_view(about["version"]["number"]);
+    const auto version = about["version"]["number"].get<std::string>();
 
     ASSERT_EQ("8.1.2", version);
 }

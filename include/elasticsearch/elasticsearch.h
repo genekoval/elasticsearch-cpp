@@ -4,7 +4,6 @@
 #include "except.h"
 
 #include <http/http>
-#include <simdjson.h>
 #include <span>
 
 namespace elastic {
@@ -16,9 +15,7 @@ namespace elastic {
         http::request url_request;
         http::request json_request;
 
-        http::memory memory = { .padding = simdjson::SIMDJSON_PADDING };
-        simdjson::ondemand::parser parser;
-        simdjson::ondemand::document document;
+        std::string memory;
 
         auto bundle(http::request& request) -> builder::request_bundle;
     public:
