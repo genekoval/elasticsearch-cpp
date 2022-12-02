@@ -5,8 +5,8 @@ namespace elastic::builder {
         request_bundle&& bundle,
         std::initializer_list<std::string_view> target
     ) :
-        exists(std::move(bundle))
+        exists(std::forward<request_bundle>(bundle))
     {
-        request().url().path("/{}", fmt::join(target, ","));
+        request->url().path("/{}", fmt::join(target, ","));
     }
 }

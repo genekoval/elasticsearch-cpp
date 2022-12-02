@@ -5,14 +5,14 @@ namespace elastic::builder {
         request_bundle&& bundle,
         std::initializer_list<std::string_view> indices
     ) :
-        void_return(std::move(bundle)),
-        method(request().method(http::method::GET, "DELETE"))
+        void_return(std::forward<request_bundle>(bundle)),
+        method(request->method(http::method::GET, "DELETE"))
     {
-        request().url().path("/{}", fmt::join(indices, ","));
+        request->url().path("/{}", fmt::join(indices, ","));
     }
 
     auto delete_index::ignore_unavailable(bool ignore) -> delete_index& {
-        request().url().append_query(__FUNCTION__, ignore);
+        request->url().append_query(__FUNCTION__, ignore);
         return *this;
     }
 }

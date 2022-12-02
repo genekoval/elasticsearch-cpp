@@ -7,12 +7,10 @@ namespace elastic::builder {
         std::string_view id,
         std::string_view document
     ) :
-        has_return(std::move(bundle))
+        has_return(std::forward<request_bundle>(bundle))
     {
-        auto& req = request();
-
-        req.method(http::method::PUT);
-        req.url().path("/{}/_create/{}", index, id);
-        req.body(document);
+        request->method(http::method::PUT);
+        request->url().path("/{}/_create/{}", index, id);
+        request->body(document);
     }
 }

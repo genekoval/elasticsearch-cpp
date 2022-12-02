@@ -2,6 +2,7 @@
 
 #include <elasticsearch/except.h>
 
+#include <ext/pool>
 #include <ext/string.h>
 #include <http/http>
 #include <nlohmann/json.hpp>
@@ -13,24 +14,32 @@ namespace elastic {
 
 namespace elastic::builder {
     struct request_bundle {
-        http::request* const request;
-        std::string* const memory;
+        http::client& client;
+        ext::pool_item<http::request> request;
     };
 
     template <typename Derived>
     class common {
+        http::client& client;
     protected:
-        request_bundle bundle;
+        ext::pool_item<http::request> request;
 
         constexpr auto derived() -> Derived& {
             return *static_cast<Derived*>(this);
         }
 
-        auto request() -> http::request& {
-            return *this->bundle.request;
+        auto perform() -> ext::task<http::response> {
+            const auto response = co_await this->request->perform(this->client);
+
+            if (response.ok()) co_return response;
+
+            throw es_error(response.status(), response.body());
         }
     public:
-        common(request_bundle&& bundle) : bundle(std::move(bundle)) {}
+        common(request_bundle&& bundle) :
+            client(bundle.client),
+            request(std::move(bundle.request))
+        {}
 
         common(const common&) = delete;
 
@@ -38,7 +47,7 @@ namespace elastic::builder {
 
         ~common() {
             try {
-                request().url().clear(CURLUPART_QUERY);
+                request->url().clear(CURLUPART_QUERY);
             }
             catch (const http::client_error& ex) {
                 TIMBER_ERROR("could not clear request query: {}", ex.what());
@@ -48,7 +57,7 @@ namespace elastic::builder {
         auto filter_path(
             std::initializer_list<std::string_view> filters
         ) -> Derived& {
-            request().url().append_query(__FUNCTION__, ext::join(filters, ","));
+            request->url().append_query(__FUNCTION__, ext::join(filters, ","));
             return derived();
         }
     };
@@ -57,45 +66,36 @@ namespace elastic::builder {
     struct void_return : common<Derived> {
         using common<Derived>::common;
 
-        auto send() -> void {
-            auto& memory = *this->bundle.memory;
-
-            auto response = this->request().perform(memory);
-
-            if (response.ok()) return;
-
-            throw es_error(response.status(), memory);
+        auto send() -> ext::task<> {
+            co_await this->perform();
         }
     };
 
     template <typename Derived>
-    struct has_return : void_return<Derived> {
-        using void_return<Derived>::void_return;
+    struct has_return : common<Derived> {
+        using common<Derived>::common;
 
-        auto send() -> json {
-            void_return<Derived>::send();
-
-            return json::parse(*this->bundle.memory);
+        auto send() -> ext::task<json> {
+            const auto response = co_await this->perform();
+            co_return json::parse(response.body());
         }
     };
 
     template <typename Derived>
     struct exists : void_return<Derived> {
-        exists(
-            request_bundle&& bundle
-        ) :
-            void_return<Derived>(std::move(bundle))
+        exists(request_bundle&& bundle) :
+            void_return<Derived>(std::forward<request_bundle>(bundle))
         {
-            this->request().method(http::method::HEAD);
+            this->request->method(http::method::HEAD);
         }
 
-        auto send() -> bool {
+        auto send() -> ext::task<bool> {
             try {
-                void_return<Derived>::send();
-                return true;
+                co_await void_return<Derived>::send();
+                co_return true;
             }
             catch (const es_error& ex) {
-                if (ex.status() == 404) return false;
+                if (ex.status() == 404) co_return false;
                 throw ex;
             }
         }

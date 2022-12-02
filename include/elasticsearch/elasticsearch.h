@@ -1,23 +1,60 @@
 #pragma once
 
 #include "builder/builder.h"
-#include "except.h"
 
-#include <http/http>
 #include <span>
 
 namespace elastic {
     class elasticsearch {
+        class request_provider {
+        protected:
+            const std::string_view host;
+            const std::string_view auth;
+        public:
+            request_provider() = default;
+
+            request_provider(std::string_view host, std::string_view auth);
+        };
+
+        template <typename Provider>
+        using pool = ext::pool<http::request, Provider>;
+
+        struct bulk_provider : request_provider {
+            using request_provider::request_provider;
+
+            auto provide() -> http::request;
+        };
+
+        struct url_provider : request_provider {
+            using request_provider::request_provider;
+
+            auto provide() -> http::request;
+        };
+
+        struct json_provider : request_provider {
+            using request_provider::request_provider;
+
+            auto provide() -> http::request;
+        };
+
         const std::string host;
         const std::string auth;
 
-        http::request bulk_request;
-        http::request url_request;
-        http::request json_request;
+        std::optional<http::client> client;
 
-        std::string memory;
+        pool<bulk_provider> bulk_requests;
+        pool<json_provider> json_requests;
+        pool<url_provider> url_requests;
 
-        auto bundle(http::request& request) -> builder::request_bundle;
+        template <typename Provider>
+        auto bundle(pool<Provider>& pool) -> builder::request_bundle {
+            if (!client) throw uninitialized_client();
+
+            return {
+                .client = *client,
+                .request = pool.checkout()
+            };
+        }
     public:
         elasticsearch() = default;
 

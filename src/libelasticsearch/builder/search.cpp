@@ -6,12 +6,10 @@ namespace elastic::builder {
         std::string_view index,
         std::string_view query
     ) :
-        has_return(std::move(bundle))
+        has_return(std::forward<request_bundle>(bundle))
     {
-        auto& req = request();
-
-        req.method(http::method::GET);
-        req.url().path("/{}/_search", index);
-        req.body(query);
+        request->method(http::method::GET);
+        request->url().path("/{}/_search", index);
+        request->body(query);
     }
 }

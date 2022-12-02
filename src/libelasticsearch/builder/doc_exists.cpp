@@ -6,8 +6,8 @@ namespace elastic::builder {
         std::string_view index,
         std::string_view id
     ) :
-        exists(std::move(bundle))
+        exists(std::forward<request_bundle>(bundle))
     {
-        request().url().path("/{}/_doc/{}", index, id);
+        request->url().path("/{}/_doc/{}", index, id);
     }
 }

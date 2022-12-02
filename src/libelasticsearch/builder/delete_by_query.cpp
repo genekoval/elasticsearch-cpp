@@ -6,12 +6,10 @@ namespace elastic::builder {
         std::initializer_list<std::string_view> target,
         std::string_view query
     ) :
-        has_return(std::move(bundle))
+        has_return(std::forward<request_bundle>(bundle))
     {
-        auto& req = request();
-
-        req.method(http::method::POST);
-        req.url().path("/{}/_delete_by_query", fmt::join(target, ","));
-        req.body(query);
+        request->method(http::method::POST);
+        request->url().path("/{}/_delete_by_query", fmt::join(target, ","));
+        request->body(query);
     }
 }

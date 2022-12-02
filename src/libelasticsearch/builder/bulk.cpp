@@ -24,14 +24,14 @@ namespace elastic::builder {
         std::optional<std::string_view> index,
         std::span<const elastic::bulk::action> actions
     ) :
-        has_return(std::move(bundle)),
+        has_return(std::forward<request_bundle>(bundle)),
         data(internal::bulk(actions))
     {
-        auto& req = request();
+        request->method(http::method::POST);
 
-        if (index) req.url().path("/{}/_bulk", *index);
-        else req.url().path("/_bulk");
+        if (index) request->url().path("/{}/_bulk", *index);
+        else request->url().path("/_bulk");
 
-        req.body(data);
+        request->body(data);
     }
 }

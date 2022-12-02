@@ -14,6 +14,7 @@ test.libs = \
  gtest \
  http \
  fmt \
+ netcore \
  timber
 
 install := $(library)
