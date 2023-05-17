@@ -16,9 +16,6 @@ namespace elastic {
             request_provider(std::string_view host, std::string_view auth);
         };
 
-        template <typename Provider>
-        using pool = ext::pool<http::request, Provider>;
-
         struct bulk_provider : request_provider {
             using request_provider::request_provider;
 
@@ -42,12 +39,12 @@ namespace elastic {
 
         std::optional<http::client> client;
 
-        pool<bulk_provider> bulk_requests;
-        pool<json_provider> json_requests;
-        pool<url_provider> url_requests;
+        ext::pool<bulk_provider> bulk_requests;
+        ext::pool<json_provider> json_requests;
+        ext::pool<url_provider> url_requests;
 
         template <typename Provider>
-        auto bundle(pool<Provider>& pool) -> builder::request_bundle {
+        auto bundle(ext::pool<Provider>& pool) -> builder::request_bundle {
             if (!client) throw uninitialized_client();
 
             return {

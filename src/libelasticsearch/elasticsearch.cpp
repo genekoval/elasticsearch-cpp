@@ -2,6 +2,8 @@
 
 #include <fmt/format.h>
 
+using ext::pool_options;
+
 namespace elastic {
     elasticsearch::request_provider::request_provider(
         std::string_view host,
@@ -53,9 +55,9 @@ namespace elastic {
         host(host),
         auth(fmt::format("ApiKey {}", api_key)),
         client(std::in_place),
-        bulk_requests(bulk_provider(this->host, this->auth)),
-        json_requests(json_provider(this->host, this->auth)),
-        url_requests(url_provider(this->host, this->auth))
+        bulk_requests(pool_options(), this->host, this->auth),
+        json_requests(pool_options(), this->host, this->auth),
+        url_requests(pool_options(), this->host, this->auth)
     {}
 
     auto elasticsearch::about() -> builder::about {
