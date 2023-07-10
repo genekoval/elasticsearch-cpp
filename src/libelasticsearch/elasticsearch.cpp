@@ -49,12 +49,13 @@ namespace elastic {
     }
 
     elasticsearch::elasticsearch(
+        http::client& client,
         std::string_view host,
         std::string_view api_key
     ) :
         host(host),
         auth(fmt::format("ApiKey {}", api_key)),
-        client(std::in_place),
+        client(&client),
         bulk_requests(pool_options(), this->host, this->auth),
         json_requests(pool_options(), this->host, this->auth),
         url_requests(pool_options(), this->host, this->auth)

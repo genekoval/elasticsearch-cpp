@@ -37,7 +37,7 @@ namespace elastic {
         const std::string host;
         const std::string auth;
 
-        std::optional<http::client> client;
+        http::client* client;
 
         ext::pool<bulk_provider> bulk_requests;
         ext::pool<json_provider> json_requests;
@@ -55,7 +55,11 @@ namespace elastic {
     public:
         elasticsearch() = default;
 
-        elasticsearch(std::string_view host, std::string_view api_key);
+        elasticsearch(
+            http::client& client,
+            std::string_view host,
+            std::string_view api_key
+        );
 
         auto about() -> builder::about;
 
