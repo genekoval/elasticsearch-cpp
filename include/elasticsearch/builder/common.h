@@ -28,12 +28,15 @@ namespace elastic::builder {
             return *static_cast<Derived*>(this);
         }
 
-        auto perform() -> ext::task<http::response> {
+        auto perform() -> ext::task<std::pair<http::response, std::string>> {
+            auto task = this->request->collect();
             const auto response = co_await this->request->perform(this->client);
 
-            if (response.ok()) co_return response;
+            if (response.ok()) {
+                co_return std::make_pair(response, std::move(task).result());
+            }
 
-            throw es_error(response.status(), response.body());
+            throw es_error(response.status(), std::move(task).result());
         }
     public:
         common(request_bundle&& bundle) :
@@ -76,8 +79,8 @@ namespace elastic::builder {
         using common<Derived>::common;
 
         auto send() -> ext::task<json> {
-            const auto response = co_await this->perform();
-            co_return json::parse(response.body());
+            const auto [res, body] = co_await this->perform();
+            co_return json::parse(body);
         }
     };
 
