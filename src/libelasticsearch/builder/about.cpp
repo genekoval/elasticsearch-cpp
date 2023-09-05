@@ -4,7 +4,7 @@ namespace elastic::builder {
     about::about(request_bundle&& bundle) :
         has_return(std::forward<request_bundle>(bundle))
     {
-        request->method(http::method::GET);
-        request->url().path("/");
+        request->method = "GET";
+        request->url.path("/");
     }
 }

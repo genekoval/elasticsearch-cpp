@@ -27,11 +27,11 @@ namespace elastic::builder {
         has_return(std::forward<request_bundle>(bundle)),
         data(internal::bulk(actions))
     {
-        request->method(http::method::POST);
+        request->method = "POST";
 
-        if (index) request->url().path("/{}/_bulk", *index);
-        else request->url().path("/_bulk");
+        if (index) request->url.path("/{}/_bulk", *index);
+        else request->url.path("/_bulk");
 
-        request->body(data);
+        request->data(data);
     }
 }

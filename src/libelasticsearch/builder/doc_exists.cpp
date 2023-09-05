@@ -8,6 +8,6 @@ namespace elastic::builder {
     ) :
         exists(std::forward<request_bundle>(bundle))
     {
-        request->url().path("/{}/_doc/{}", index, id);
+        request->url.path("/{}/_doc/{}", index, id);
     }
 }

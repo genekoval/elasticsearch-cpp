@@ -39,9 +39,9 @@ namespace {
 
 namespace elastic::test {
     auto ElasticEnvironment::elasticsearch() -> elastic::elasticsearch& {
-        static auto client = http::client();
+        static auto session = http::session();
         static auto instance = elastic::elasticsearch(
-            client,
+            session,
             settings().node,
             settings().auth
         );

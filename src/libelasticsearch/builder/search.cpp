@@ -8,8 +8,8 @@ namespace elastic::builder {
     ) :
         has_return(std::forward<request_bundle>(bundle))
     {
-        request->method(http::method::GET);
-        request->url().path("/{}/_search", index);
-        request->body(query);
+        request->method = "GET";
+        request->url.path("/{}/_search", index);
+        request->data(query);
     }
 }

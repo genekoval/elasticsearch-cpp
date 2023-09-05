@@ -3,9 +3,7 @@
 #include "common.h"
 
 namespace elastic::builder {
-    class delete_index final : public void_return<delete_index> {
-        const http::method_guard method;
-    public:
+    struct delete_index final : void_return<delete_index> {
         delete_index(
             request_bundle&& bundle,
             std::initializer_list<std::string_view> indices

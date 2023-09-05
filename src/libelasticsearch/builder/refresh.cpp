@@ -7,7 +7,7 @@ namespace elastic::builder {
     ) :
         void_return(std::forward<request_bundle>(bundle))
     {
-        request->method(http::method::POST);
-        request->url().path("/{}/_refresh", fmt::join(target, ","));
+        request->method = "POST";
+        request->url.path("/{}/_refresh", fmt::join(target, ","));
     }
 }

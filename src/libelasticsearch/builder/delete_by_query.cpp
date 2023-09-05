@@ -8,8 +8,8 @@ namespace elastic::builder {
     ) :
         has_return(std::forward<request_bundle>(bundle))
     {
-        request->method(http::method::POST);
-        request->url().path("/{}/_delete_by_query", fmt::join(target, ","));
-        request->body(query);
+        request->method = "POST";
+        request->url.path("/{}/_delete_by_query", fmt::join(target, ","));
+        request->data(query);
     }
 }

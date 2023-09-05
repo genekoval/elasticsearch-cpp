@@ -37,7 +37,7 @@ namespace elastic {
         const std::string host;
         const std::string auth;
 
-        http::client* client;
+        http::session* session;
 
         ext::pool<bulk_provider> bulk_requests;
         ext::pool<json_provider> json_requests;
@@ -45,18 +45,18 @@ namespace elastic {
 
         template <typename Provider>
         auto bundle(ext::pool<Provider>& pool) -> builder::request_bundle {
-            if (!client) throw uninitialized_client();
+            if (!session) throw uninitialized_client();
 
             return {
-                .client = *client,
-                .request = pool.checkout()
+                .request = pool.checkout(),
+                .session= *session
             };
         }
     public:
         elasticsearch() = default;
 
         elasticsearch(
-            http::client& client,
+            http::session& session,
             std::string_view host,
             std::string_view api_key
         );

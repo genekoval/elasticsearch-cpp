@@ -8,8 +8,8 @@ namespace elastic::builder {
     ) :
         void_return(std::forward<request_bundle>(bundle))
     {
-        request->method(http::method::PUT);
-        request->url().path("/{}", name);
-        if (!config.empty()) request->body(config);
+        request->method = "PUT";
+        request->url.path("/{}", name);
+        if (!config.empty()) request->data(config);
     }
 }

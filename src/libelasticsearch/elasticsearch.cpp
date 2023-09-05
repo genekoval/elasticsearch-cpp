@@ -2,7 +2,13 @@
 
 #include <fmt/format.h>
 
+namespace media = http::media;
+
 using ext::pool_options;
+
+namespace http::media {
+    constexpr media_type ndjson = "application/x-ndjson";
+}
 
 namespace elastic {
     elasticsearch::request_provider::request_provider(
@@ -16,12 +22,10 @@ namespace elastic {
     auto elasticsearch::bulk_provider::provide() -> http::request {
         auto request = http::request();
 
-        request.method(http::method::POST);
-        request.url().set(CURLUPART_URL, host.data());
-        request.headers({
-            {"Authorization", auth},
-            {"Content-Type", "application/x-ndjson"}
-        });
+        request.method = "POST";
+        request.url = host;
+        request.header("authorization", auth);
+        request.content_type(media::ndjson);
 
         return request;
     }
@@ -29,33 +33,29 @@ namespace elastic {
     auto elasticsearch::json_provider::provide() -> http::request {
         auto request = http::request();
 
-        request.url().set(CURLUPART_URL, host.data());
-        request.headers({
-            {"Authorization", auth},
-            {"Content-Type", "application/json"}
-        });
+        request.url = host;
+        request.header("authorization", auth);
+        request.content_type(media::json);
         return request;
     }
 
     auto elasticsearch::url_provider::provide() -> http::request {
         auto request = http::request();
 
-        request.url().set(CURLUPART_URL, host.data());
-        request.headers({
-            {"Authorization", auth}
-        });
+        request.url = host;
+        request.header("authorization", auth);
 
         return request;
     }
 
     elasticsearch::elasticsearch(
-        http::client& client,
+        http::session& session,
         std::string_view host,
         std::string_view api_key
     ) :
         host(host),
         auth(fmt::format("ApiKey {}", api_key)),
-        client(&client),
+        session(&session),
         bulk_requests(pool_options(), this->host, this->auth),
         json_requests(pool_options(), this->host, this->auth),
         url_requests(pool_options(), this->host, this->auth)

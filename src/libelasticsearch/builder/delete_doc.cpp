@@ -6,9 +6,9 @@ namespace elastic::builder {
         std::string_view index,
         std::string_view id
     ) :
-        has_return(std::forward<request_bundle>(bundle)),
-        method(request->method(http::method::GET, "DELETE"))
+        has_return(std::forward<request_bundle>(bundle))
     {
-        request->url().path("/{}/_doc/{}", index, id);
+        request->method = "DELETE";
+        request->url.path("/{}/_doc/{}", index, id);
     }
 }

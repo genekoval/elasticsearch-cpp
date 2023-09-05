@@ -14,13 +14,13 @@ namespace elastic {
 
 namespace elastic::builder {
     struct request_bundle {
-        http::client& client;
         ext::pool_item<http::request> request;
+        http::session& session;
     };
 
     template <typename Derived>
     class common {
-        http::client& client;
+        http::session& session;
     protected:
         ext::pool_item<http::request> request;
 
@@ -28,19 +28,16 @@ namespace elastic::builder {
             return *static_cast<Derived*>(this);
         }
 
-        auto perform() -> ext::task<std::pair<http::response, std::string>> {
-            auto task = this->request->collect();
-            const auto response = co_await this->request->perform(this->client);
+        auto perform() -> ext::task<std::string> {
+            auto response =
+                co_await this->request->perform(this->session);
 
-            if (response.ok()) {
-                co_return std::make_pair(response, std::move(task).result());
-            }
-
-            throw es_error(response.status(), std::move(task).result());
+            if (response.ok()) co_return std::move(response).data();
+            throw es_error(response.status(), response.data());
         }
     public:
         common(request_bundle&& bundle) :
-            client(bundle.client),
+            session(bundle.session),
             request(std::move(bundle.request))
         {}
 
@@ -50,7 +47,7 @@ namespace elastic::builder {
 
         ~common() {
             try {
-                request->url().clear(CURLUPART_QUERY);
+                request->url.clear(CURLUPART_QUERY);
             }
             catch (const http::client_error& ex) {
                 TIMBER_ERROR("could not clear request query: {}", ex.what());
@@ -60,7 +57,7 @@ namespace elastic::builder {
         auto filter_path(
             std::initializer_list<std::string_view> filters
         ) -> Derived& {
-            request->url().append_query(__FUNCTION__, ext::join(filters, ","));
+            request->url.query(__FUNCTION__, ext::join(filters, ","));
             return derived();
         }
     };
@@ -79,8 +76,7 @@ namespace elastic::builder {
         using common<Derived>::common;
 
         auto send() -> ext::task<json> {
-            const auto [res, body] = co_await this->perform();
-            co_return json::parse(body);
+            co_return json::parse(co_await this->perform());
         }
     };
 
@@ -89,7 +85,7 @@ namespace elastic::builder {
         exists(request_bundle&& bundle) :
             void_return<Derived>(std::forward<request_bundle>(bundle))
         {
-            this->request->method(http::method::HEAD);
+            this->request->method = "HEAD";
         }
 
         auto send() -> ext::task<bool> {

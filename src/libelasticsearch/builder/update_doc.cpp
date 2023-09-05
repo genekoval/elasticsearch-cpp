@@ -9,8 +9,8 @@ namespace elastic::builder {
     ) :
         void_return(std::forward<request_bundle>(bundle))
     {
-        request->method(http::method::POST);
-        request->url().path("/{}/_update/{}", index, id);
-        request->body(body);
+        request->method = "POST";
+        request->url.path("/{}/_update/{}", index, id);
+        request->data(body);
     }
 }

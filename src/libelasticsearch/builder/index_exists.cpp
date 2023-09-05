@@ -7,6 +7,6 @@ namespace elastic::builder {
     ) :
         exists(std::forward<request_bundle>(bundle))
     {
-        request->url().path("/{}", fmt::join(target, ","));
+        request->url.path("/{}", fmt::join(target, ","));
     }
 }

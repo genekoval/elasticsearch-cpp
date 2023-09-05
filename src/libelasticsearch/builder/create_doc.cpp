@@ -9,8 +9,8 @@ namespace elastic::builder {
     ) :
         has_return(std::forward<request_bundle>(bundle))
     {
-        request->method(http::method::PUT);
-        request->url().path("/{}/_create/{}", index, id);
-        request->body(document);
+        request->method = "PUT";
+        request->url.path("/{}/_create/{}", index, id);
+        request->data(document);
     }
 }
