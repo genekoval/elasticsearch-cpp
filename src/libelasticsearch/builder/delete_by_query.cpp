@@ -10,6 +10,6 @@ namespace elastic::builder {
     {
         request->method = "POST";
         request->url.path("/{}/_delete_by_query", fmt::join(target, ","));
-        request->data(query);
+        request->data_view(query);
     }
 }

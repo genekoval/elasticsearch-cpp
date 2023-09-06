@@ -6,9 +6,7 @@
 #include <span>
 
 namespace elastic::builder {
-    class bulk : public has_return<bulk> {
-        const std::string data;
-    public:
+    struct bulk : has_return<bulk> {
         bulk(
             request_bundle&& bundle,
             std::optional<std::string_view> index,

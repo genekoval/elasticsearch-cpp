@@ -10,6 +10,6 @@ namespace elastic::builder {
     {
         request->method = "GET";
         request->url.path("/{}/_search", index);
-        request->data(query);
+        request->data_view(query);
     }
 }

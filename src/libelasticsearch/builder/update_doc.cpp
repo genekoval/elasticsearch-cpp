@@ -11,6 +11,6 @@ namespace elastic::builder {
     {
         request->method = "POST";
         request->url.path("/{}/_update/{}", index, id);
-        request->data(body);
+        request->data_view(body);
     }
 }

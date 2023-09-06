@@ -11,6 +11,6 @@ namespace elastic::builder {
     {
         request->method = "PUT";
         request->url.path("/{}/_create/{}", index, id);
-        request->data(document);
+        request->data_view(document);
     }
 }

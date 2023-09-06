@@ -10,6 +10,6 @@ namespace elastic::builder {
     {
         request->method = "PUT";
         request->url.path("/{}", name);
-        if (!config.empty()) request->data(config);
+        if (!config.empty()) request->data_view(config);
     }
 }
