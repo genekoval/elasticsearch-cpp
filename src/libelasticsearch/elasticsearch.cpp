@@ -7,7 +7,10 @@ namespace media = http::media;
 using ext::pool_options;
 
 namespace http::media {
-    constexpr media_type ndjson = "application/x-ndjson";
+    auto ndjson() noexcept -> const media_type& {
+        static const media_type type = "application/x-ndjson";
+        return type;
+    }
 }
 
 namespace elastic {
@@ -25,7 +28,7 @@ namespace elastic {
         request.method = "POST";
         request.url = host;
         request.header("authorization", auth);
-        request.content_type(media::ndjson);
+        request.content_type(media::ndjson());
 
         return request;
     }
@@ -35,7 +38,7 @@ namespace elastic {
 
         request.url = host;
         request.header("authorization", auth);
-        request.content_type(media::json);
+        request.content_type(media::json());
         return request;
     }
 
