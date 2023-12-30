@@ -47,10 +47,7 @@ namespace elastic {
         auto bundle(ext::pool<Provider>& pool) -> builder::request_bundle {
             if (!session) throw uninitialized_client();
 
-            return {
-                .request = pool.checkout(),
-                .session= *session
-            };
+            return {.request = pool.checkout(), .session = *session};
         }
     public:
         elasticsearch() = default;
@@ -65,10 +62,8 @@ namespace elastic {
 
         auto bulk(std::span<const bulk::action> actions) -> builder::bulk;
 
-        auto bulk(
-            std::string_view index,
-            std::span<const bulk::action> actions
-        ) -> builder::bulk;
+        auto bulk(std::string_view index, std::span<const bulk::action> actions)
+            -> builder::bulk;
 
         auto create_doc(
             std::string_view index,
@@ -86,37 +81,26 @@ namespace elastic {
             std::string_view query
         ) -> builder::delete_by_query;
 
-        auto delete_doc(
-            std::string_view index,
-            std::string_view id
-        ) -> builder::delete_doc;
+        auto delete_doc(std::string_view index, std::string_view id)
+            -> builder::delete_doc;
 
-        auto delete_index(
-            std::initializer_list<std::string_view> indices
-        ) -> builder::delete_index;
+        auto delete_index(std::initializer_list<std::string_view> indices)
+            -> builder::delete_index;
 
-        auto doc_exists(
-            std::string_view index,
-            std::string_view id
-        ) -> builder::doc_exists;
+        auto doc_exists(std::string_view index, std::string_view id)
+            -> builder::doc_exists;
 
-        auto get_doc_source(
-            std::string_view index,
-            std::string_view id
-        ) -> builder::get_doc_source;
+        auto get_doc_source(std::string_view index, std::string_view id)
+            -> builder::get_doc_source;
 
-        auto index_exists(
-            std::initializer_list<std::string_view> target
-        ) -> builder::index_exists;
+        auto index_exists(std::initializer_list<std::string_view> target)
+            -> builder::index_exists;
 
-        auto refresh(
-            std::initializer_list<std::string_view> target
-        ) -> builder::refresh;
+        auto refresh(std::initializer_list<std::string_view> target)
+            -> builder::refresh;
 
-        auto search(
-            std::string_view index,
-            std::string_view query
-        ) -> builder::search;
+        auto search(std::string_view index, std::string_view query)
+            -> builder::search;
 
         auto update_doc(
             std::string_view index,

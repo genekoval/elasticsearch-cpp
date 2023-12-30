@@ -7,8 +7,7 @@ namespace elastic {
 
     es_error::es_error(long response_code, std::string_view message) :
         std::runtime_error(std::string(message)),
-        response_code(response_code)
-    {}
+        response_code(response_code) {}
 
-   auto es_error::status() const -> long { return response_code; }
+    auto es_error::status() const -> long { return response_code; }
 }

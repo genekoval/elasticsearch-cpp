@@ -6,8 +6,7 @@ namespace elastic::builder {
         std::initializer_list<std::string_view> target,
         std::string_view query
     ) :
-        has_return(std::forward<request_bundle>(bundle))
-    {
+        has_return(std::forward<request_bundle>(bundle)) {
         request->method = "POST";
         request->url.path("/{}/_delete_by_query", fmt::join(target, ","));
         request->data_view(query);

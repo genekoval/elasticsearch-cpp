@@ -19,9 +19,7 @@ namespace {
 
         auto out = std::ostringstream();
 
-        out << json({
-            {action, options}
-        }).dump() << "\n";
+        out << json({{action, options}}).dump() << "\n";
 
         if (source) out << *source << "\n";
 
@@ -37,29 +35,16 @@ namespace elastic::bulk {
         const options& opts,
         std::string_view fields
     ) :
-        _action(ndjson(action, opts, fields))
-    {}
+        _action(ndjson(action, opts, fields)) {}
 
-    create::create(
-        const options& opts,
-        std::string_view fields
-    ) :
-        _create_action(name, opts, fields)
-    {}
+    create::create(const options& opts, std::string_view fields) :
+        _create_action(name, opts, fields) {}
 
     del::del(const options& opts) : _action(ndjson(name, opts, {})) {}
 
-    index::index(
-        const options& opts,
-        std::string_view fields
-    ) :
-        _create_action(name, opts, fields)
-    {}
+    index::index(const options& opts, std::string_view fields) :
+        _create_action(name, opts, fields) {}
 
-    update::update(
-        const options& opts,
-        std::string_view doc
-    ) :
-        _action(ndjson(name, opts, doc))
-    {}
+    update::update(const options& opts, std::string_view doc) :
+        _action(ndjson(name, opts, doc)) {}
 }

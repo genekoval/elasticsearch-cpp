@@ -6,8 +6,7 @@ namespace elastic::builder {
         std::string_view name,
         std::string_view config
     ) :
-        void_return(std::forward<request_bundle>(bundle))
-    {
+        void_return(std::forward<request_bundle>(bundle)) {
         request->method = "PUT";
         request->url.path("/{}", name);
         if (!config.empty()) request->data_view(config);

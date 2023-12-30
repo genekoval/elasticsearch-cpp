@@ -7,8 +7,7 @@ namespace elastic::builder {
         std::string_view id,
         std::string_view document
     ) :
-        has_return(std::forward<request_bundle>(bundle))
-    {
+        has_return(std::forward<request_bundle>(bundle)) {
         request->method = "PUT";
         request->url.path("/{}/_create/{}", index, id);
         request->data_view(document);

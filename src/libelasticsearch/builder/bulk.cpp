@@ -2,15 +2,15 @@
 
 namespace {
     namespace internal {
-        auto bulk(
-            std::span<const elastic::bulk::action> actions
-        ) -> std::string {
+        auto bulk(std::span<const elastic::bulk::action> actions)
+            -> std::string {
             auto out = std::ostringstream();
 
             for (const auto& action : actions) {
-                out << std::visit([](auto&& arg) -> std::string_view {
-                    return arg.storage;
-                }, action);
+                out << std::visit(
+                    [](auto&& arg) -> std::string_view { return arg.storage; },
+                    action
+                );
             }
 
             return out.str();
@@ -24,8 +24,7 @@ namespace elastic::builder {
         std::optional<std::string_view> index,
         std::span<const elastic::bulk::action> actions
     ) :
-        has_return(std::forward<request_bundle>(bundle))
-    {
+        has_return(std::forward<request_bundle>(bundle)) {
         request->method = "POST";
 
         if (index) request->url.path("/{}/_bulk", *index);

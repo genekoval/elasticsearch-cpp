@@ -19,8 +19,7 @@ namespace elastic {
         std::string_view auth
     ) :
         host(host),
-        auth(auth)
-    {}
+        auth(auth) {}
 
     auto elasticsearch::bulk_provider::provide() -> http::request {
         auto request = http::request();
@@ -61,16 +60,14 @@ namespace elastic {
         session(&session),
         bulk_requests(pool_options(), this->host, this->auth),
         json_requests(pool_options(), this->host, this->auth),
-        url_requests(pool_options(), this->host, this->auth)
-    {}
+        url_requests(pool_options(), this->host, this->auth) {}
 
     auto elasticsearch::about() -> builder::about {
         return {bundle(url_requests)};
     }
 
-    auto elasticsearch::bulk(
-        std::span<const bulk::action> actions
-    ) -> builder::bulk {
+    auto elasticsearch::bulk(std::span<const bulk::action> actions)
+        -> builder::bulk {
         return {bundle(bulk_requests), {}, actions};
     }
 
@@ -98,11 +95,7 @@ namespace elastic {
         if (config.empty()) bundle.emplace(this->bundle(url_requests));
         else bundle.emplace(this->bundle(json_requests));
 
-        return {
-            *std::move(bundle),
-            name,
-            config
-        };
+        return {*std::move(bundle), name, config};
     }
 
     auto elasticsearch::delete_by_query(
@@ -112,10 +105,8 @@ namespace elastic {
         return {bundle(json_requests), target, query};
     }
 
-    auto elasticsearch::delete_doc(
-        std::string_view index,
-        std::string_view id
-    ) -> builder::delete_doc {
+    auto elasticsearch::delete_doc(std::string_view index, std::string_view id)
+        -> builder::delete_doc {
         return {bundle(url_requests), index, id};
     }
 
@@ -125,10 +116,8 @@ namespace elastic {
         return {bundle(url_requests), indices};
     }
 
-    auto elasticsearch::doc_exists(
-        std::string_view index,
-        std::string_view id
-    ) -> builder::doc_exists {
+    auto elasticsearch::doc_exists(std::string_view index, std::string_view id)
+        -> builder::doc_exists {
         return {bundle(url_requests), index, id};
     }
 
@@ -145,16 +134,13 @@ namespace elastic {
         return {bundle(url_requests), target};
     }
 
-    auto elasticsearch::refresh(
-        std::initializer_list<std::string_view> target
-    ) -> builder::refresh {
+    auto elasticsearch::refresh(std::initializer_list<std::string_view> target)
+        -> builder::refresh {
         return {bundle(url_requests), target};
     }
 
-    auto elasticsearch::search(
-        std::string_view index,
-        std::string_view query
-    ) -> builder::search {
+    auto elasticsearch::search(std::string_view index, std::string_view query)
+        -> builder::search {
         return {bundle(json_requests), index, query};
     }
 

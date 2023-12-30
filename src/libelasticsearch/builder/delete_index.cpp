@@ -5,8 +5,7 @@ namespace elastic::builder {
         request_bundle&& bundle,
         std::initializer_list<std::string_view> indices
     ) :
-        void_return(std::forward<request_bundle>(bundle))
-    {
+        void_return(std::forward<request_bundle>(bundle)) {
         request->method = "DELETE";
         request->url.path("/{}", fmt::join(indices, ","));
     }

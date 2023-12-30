@@ -2,5 +2,4 @@
 #include <internal/suite.h>
 
 ElasticTest::ElasticTest() :
-    client(elastic::test::ElasticEnvironment::elasticsearch())
-{}
+    client(elastic::test::ElasticEnvironment::elasticsearch()) {}

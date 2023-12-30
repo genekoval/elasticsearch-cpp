@@ -7,8 +7,7 @@ namespace elastic::builder {
         std::string_view id,
         std::string_view body
     ) :
-        void_return(std::forward<request_bundle>(bundle))
-    {
+        void_return(std::forward<request_bundle>(bundle)) {
         request->method = "POST";
         request->url.path("/{}/_update/{}", index, id);
         request->data_view(body);

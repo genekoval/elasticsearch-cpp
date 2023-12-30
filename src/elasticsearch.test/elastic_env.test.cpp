@@ -13,11 +13,7 @@ namespace {
             std::string auth;
         };
 
-        NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
-            settings_type,
-            node,
-            auth
-        )
+        NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(settings_type, node, auth)
 
         const auto settings_path = fs::current_path() / TEST_CONFIG;
 
@@ -40,15 +36,10 @@ namespace {
 namespace elastic::test {
     auto ElasticEnvironment::elasticsearch() -> elastic::elasticsearch& {
         static auto session = http::session();
-        static auto instance = elastic::elasticsearch(
-            session,
-            settings().node,
-            settings().auth
-        );
+        static auto instance =
+            elastic::elasticsearch(session, settings().node, settings().auth);
         return instance;
     }
 
-    auto ElasticEnvironment::SetUp() -> void {
-        elasticsearch();
-    }
+    auto ElasticEnvironment::SetUp() -> void { elasticsearch(); }
 }
