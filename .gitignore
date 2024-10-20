@@ -1,4 +1,4 @@
-bin
-lib
-obj
-.test.json
+/*build
+/.cache
+compile_commands.json
+CMakeUserPresets.json
